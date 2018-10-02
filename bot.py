@@ -2,6 +2,8 @@
 
 import logging
 import telegram
+import os
+import subprocess
 from telegram.ext import Updater, CommandHandler
 
 try:
@@ -29,9 +31,31 @@ def start(bot, update):
                      reply_markup=reply_markup)
 
 
+def get_screenshot():
+    try:
+        stdout = subprocess.check_output(["./screenshot.sh"])
+        return stdout.decode('UTF-8')
+    except subprocess.CalledProcessError:
+        return False
+
+
+def screenshot(bot, update):
+    screenshot = get_screenshot()
+    chat_id = update.message.chat_id
+    if not screenshot:
+        bot.send_message(chat_id=chat_id, text="Failed to take a screenshot.")
+        return
+    bot.send_document(chat_id=chat_id, document=open(screenshot, 'rb'))
+    os.remove(screenshot)
+
+
 updater = Updater(token=config.api_key)
 dispatcher = updater.dispatcher
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
+
+screenshot_handler = CommandHandler('screenshot', screenshot)
+dispatcher.add_handler(screenshot_handler)
+
 updater.start_polling()

@@ -49,6 +49,16 @@ def screenshot(bot, update):
     os.remove(screenshot)
 
 
+def lock(bot, update):
+    command = config.lock.split()
+    exitcode = subprocess.call(command)
+    chat_id = update.message.chat_id
+    # Only send message if command fails because another script will send the
+    # message on successful lock
+    if exitcode != 0:
+        bot.send_message(chat_id=chat_id, text="Command failed.")
+
+
 updater = Updater(token=config.api_key)
 dispatcher = updater.dispatcher
 
@@ -57,5 +67,8 @@ dispatcher.add_handler(start_handler)
 
 screenshot_handler = CommandHandler('screenshot', screenshot)
 dispatcher.add_handler(screenshot_handler)
+
+lock_handler = CommandHandler('lock', lock)
+dispatcher.add_handler(lock_handler)
 
 updater.start_polling()

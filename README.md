@@ -2,7 +2,7 @@
 
 A bot intended to check the state of your PC (screenshots and check if locked)
 
-# Setup
+## Setup
 
 + Install `scrot`, `python3`, `pip3` using your package manager.
   + Arch Linux: `sudo pacman -S scrot python python-pip`
@@ -17,3 +17,4 @@ A bot intended to check the state of your PC (screenshots and check if locked)
   + `cp sample.config.py config.py`
   + Edit `config.py` using a text editor
 + `python3 bot.py`
++ Add `python3 lock.py lock` and `python3 lock.py unlock` around your lock script to send messages when screen is locked and unlocked.

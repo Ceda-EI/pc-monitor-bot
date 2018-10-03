@@ -32,7 +32,8 @@ def start(bot, update):
     if not check_user(bot, update):
         return False
     chat_id = update.message.chat_id
-    custom_keyboard = [['/state', '/screenshot'], ['/lock', '/video']]
+    custom_keyboard = [['/state', '/lock'],
+                       ['/screenshot', '/shutdown', '/reboot']]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=chat_id,  text="What to do?",
                      reply_markup=reply_markup)
@@ -87,6 +88,30 @@ def state(bot, update):
         bot.send_message(chat_id=chat_id, text="Unlocked.")
 
 
+def shutdown(bot, update):
+    if not check_user(bot, update):
+        return False
+    command = ["poweroff"]
+    chat_id = update.message.chat_id
+    bot.send_message(chat_id=chat_id, text="Attempting to shutdown.")
+    exitcode = subprocess.call(command)
+    chat_id = update.message.chat_id
+    if exitcode != 0:
+        bot.send_message(chat_id=chat_id, text="Shutdown failed.")
+
+
+def reboot(bot, update):
+    if not check_user(bot, update):
+        return False
+    command = ["reboot"]
+    chat_id = update.message.chat_id
+    bot.send_message(chat_id=chat_id, text="Attempting to reboot.")
+    exitcode = subprocess.call(command)
+    chat_id = update.message.chat_id
+    if exitcode != 0:
+        bot.send_message(chat_id=chat_id, text="Reboot failed.")
+
+
 updater = Updater(token=config.api_key)
 dispatcher = updater.dispatcher
 
@@ -102,4 +127,9 @@ dispatcher.add_handler(lock_handler)
 state_handler = CommandHandler('state', state)
 dispatcher.add_handler(state_handler)
 
+shutdown_handler = CommandHandler('shutdown', shutdown)
+dispatcher.add_handler(shutdown_handler)
+
+reboot_handler = CommandHandler('reboot', reboot)
+dispatcher.add_handler(reboot_handler)
 updater.start_polling()

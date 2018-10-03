@@ -13,3 +13,8 @@ lock = "xautolock -locknow"
 # Put the name of process that is running only when the screen is
 # locked.
 lock_process = "i3lock"
+
+# Lock and unlock message. The date is parsed according to strftime.
+# Check man strftime or http://strftime.org/
+lock_message = "You have locked your system - %c"
+unlock_message = "You have unlocked your system - %c"

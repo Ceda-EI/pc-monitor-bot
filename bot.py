@@ -4,6 +4,7 @@ import logging
 import telegram
 import os
 import subprocess
+import psutil
 from telegram.ext import Updater, CommandHandler
 
 try:
@@ -69,6 +70,23 @@ def lock(bot, update):
         bot.send_message(chat_id=chat_id, text="Command failed.")
 
 
+def check_if_running(process_name):
+    for i in psutil.process_iter():
+        if i.name() == process_name:
+            return True
+    return False
+
+
+def state(bot, update):
+    if not check_user(bot, update):
+        return False
+    chat_id = update.message.chat_id
+    if check_if_running(config.lock_process):
+        bot.send_message(chat_id=chat_id, text="Locked.")
+    else:
+        bot.send_message(chat_id=chat_id, text="Unlocked.")
+
+
 updater = Updater(token=config.api_key)
 dispatcher = updater.dispatcher
 
@@ -80,5 +98,8 @@ dispatcher.add_handler(screenshot_handler)
 
 lock_handler = CommandHandler('lock', lock)
 dispatcher.add_handler(lock_handler)
+
+state_handler = CommandHandler('state', state)
+dispatcher.add_handler(state_handler)
 
 updater.start_polling()

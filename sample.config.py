@@ -8,3 +8,8 @@ master_id = 123456789
 
 # Command to lock the screen. Replace the command with actual command.
 lock = "xautolock -locknow"
+
+# Command to check if it is running to see if the screen is locked
+# Put the name of process that is running only when the screen is
+# locked.
+lock_process = "i3lock"

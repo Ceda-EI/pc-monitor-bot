@@ -17,14 +17,20 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - \
                     %(message)s', level=logging.INFO)
 
 
-def start(bot, update):
+def check_user(bot, update):
     chat_id = update.message.chat_id
     if chat_id != config.master_id:
-        text = "You need to host your own instance! \ Source: \
+        text = "You need to host your own instance! Source: \
                 https://gitlab.com/ceda_ei/pc-monitor-bot"
         bot.send_message(chat_id=chat_id, text=text)
-        return
+        return False
+    return True
 
+
+def start(bot, update):
+    if not check_user(bot, update):
+        return False
+    chat_id = update.message.chat_id
     custom_keyboard = [['/state', '/screenshot'], ['/lock', '/video']]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=chat_id,  text="What to do?",
@@ -40,6 +46,8 @@ def get_screenshot():
 
 
 def screenshot(bot, update):
+    if not check_user(bot, update):
+        return False
     screenshot = get_screenshot()
     chat_id = update.message.chat_id
     if not screenshot:
@@ -50,6 +58,8 @@ def screenshot(bot, update):
 
 
 def lock(bot, update):
+    if not check_user(bot, update):
+        return False
     command = config.lock.split()
     exitcode = subprocess.call(command)
     chat_id = update.message.chat_id

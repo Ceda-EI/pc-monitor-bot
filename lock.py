@@ -23,7 +23,7 @@ if arg == "lock":
     bot.send_message(chat_id=config.master_id, text=text)
 elif arg == "unlock":
     today = datetime.datetime.today()
-    text = today.strftime(config.lock_message)
+    text = today.strftime(config.unlock_message)
     bot.send_message(chat_id=config.master_id, text=text)
 else:
     print("Wrong parameter. Exiting.")
